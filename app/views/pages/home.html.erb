@@ -3,7 +3,13 @@
     <small>The best way to ship your orders.</small>
   </h1>
   <hr>
-  <p class="text-center"><a class="btn btn-primary btn-lg" href="/auth/twitter" role="button">Get Started</a></p>
+  <p class="text-center">
+    <% if logged_in? %>
+      <a class="btn btn-primary btn-lg" href="<%= products_path %>" role="button">Go to your Products Inventory</a>
+    <% else %>
+      <a class="btn btn-primary btn-lg" href="/auth/twitter" role="button">Get Started by Logging In</a>
+    <% end %>
+  </p>
 </div>
 
 <p class="text-center"><%= image_tag 'box.jpg' %></p>

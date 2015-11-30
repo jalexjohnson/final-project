@@ -7,8 +7,6 @@ Product
 
 User
   uid
-  name
-
 
 # Example table for a typical Book model.
 #

@@ -17,11 +17,11 @@
 
   <tbody>
     <% @products.each do |product| %>
-      <tr id="%<= dom_id(product) %>">
-        <td><%= product.sku %></td>
-        <td><%= product.on_hand %></td>
-        <td><%= link_to 'Set Quantity', '#', class: 'btn btn-primary' %></td>
-        <td><%= link_to 'Delete Product', '#', class: 'btn btn-danger' %></td>
+      <tr id="<%= dom_id(product) %>">
+        <td><span id="<%= dom_id(product) %>_sku"><%= product.sku %></span></td>
+        <td><span id="<%= dom_id(product) %>_on_hand"><%= product.on_hand %></span></td>
+        <td><%= link_to 'Set Quantity', edit_product_path(id: product.id), remote: true, class: 'btn btn-primary', id: dom_id(product) + '_edit' %></td>
+        <td><%= link_to 'Delete Product', product, method: :delete, remote: true, class: 'btn btn-danger', id: dom_id(product) + '_destroy', data: {confirm: "Really delete this product?"} %></td>
       </tr>
     <% end %>
   </tbody>

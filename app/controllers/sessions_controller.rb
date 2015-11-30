@@ -5,11 +5,12 @@ class SessionsController < ApplicationController
     user = User.find_by_uid(data['uid'])
     user ||= User.create uid: data['uid']
     session[:user_id] = user.id
-    redirect_to products_url, notice: "Welcome back!"
+    session[:user_name] = request.env['omniauth.auth']['info']['name']
+    redirect_to products_url, notice: "Welcome #{session[:user_name]}!"
   end
 
   def destroy
     reset_session
-    redirect_to root_url, notice: "Good day!"
+    redirect_to root_url, notice: "Goodbye!"
   end
 end

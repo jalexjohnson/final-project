@@ -13,3 +13,8 @@
  *= require_tree .
  *= require_self
  */
+
+/* http://stackoverflow.com/questions/27747072/vertical-align-in-bootstrap-table */ 
+ .table > tbody > tr > td {
+      vertical-align: middle;
+ }

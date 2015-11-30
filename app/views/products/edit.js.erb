@@ -1,0 +1,10 @@
+$('a#<%= dom_id(@product) %>_edit').attr('href','#');
+$('a#<%= dom_id(@product) %>_edit').attr('disabled','disabled');
+$('span#<%= dom_id(@product) %>_on_hand').html('\
+  <%= form_for @product, method: "patch", remote: true do |f| %>\
+    <%= f.number_field :on_hand, class: "auto-submit-field", min: 0, step: 1 %>\
+  <% end %>\
+');
+$('.auto-submit-field').blur(function () {
+  $(this).closest('form').submit();
+});

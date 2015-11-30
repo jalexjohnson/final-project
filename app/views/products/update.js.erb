@@ -1,0 +1,3 @@
+$('a#<%= dom_id(@product) %>_edit').attr('href','<%= edit_product_path(id: @product.id)%>');
+$('a#<%= dom_id(@product) %>_edit').removeAttr("disabled");
+$('span#<%= dom_id(@product) %>_on_hand').html('<%= @product.on_hand %>');

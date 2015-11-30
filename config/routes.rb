@@ -4,10 +4,9 @@ Rails.application.routes.draw do
 
   resources :products
 
-  get '/auth/twitter/callback' => 'sessions#create'
-
   get '/pages/:action', controller: 'pages'
 
+  get '/auth/twitter/callback' => 'sessions#create'
   get '/logout' => 'sessions#destroy'
-  
+
 end
