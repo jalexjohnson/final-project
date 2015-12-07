@@ -1,6 +1,75 @@
 class ProductsController < ApplicationController
-  before_action :require_login
+  protect_from_forgery except: [:ship] #http://stackoverflow.com/questions/1177863/how-do-i-ignore-the-authenticity-token-for-specific-actions-in-rails
+  before_action :require_login, only: [:index, :show, :new, :edit, :create, :update, :destroy]
   before_action :set_product, only: [:show, :edit, :update, :destroy]
+
+  def set_product_api(key, sku)
+    if key and sku
+      if current_user = User.find_by_key(key.downcase)
+        if product = current_user.products.find_by_sku(sku.downcase)
+          return product
+        else
+          # Not Found
+          payload = {
+            status: 404,
+            message: "Not Found"
+          }
+          render json: payload, status: 404
+          return
+        end
+      else
+        # Unauthorized
+        payload = {
+          status: 401,
+          message: "Unauthorized"
+        }
+        render json: payload, status: 401
+        return
+      end
+    else
+      # Bad Request
+      payload = {
+        status: 400,
+        message: "Bad Request"
+      }
+      render json: payload, status: 400
+      return
+    end
+  end
+
+  def show_count
+    if product = set_product_api(params[:key], params[:sku])
+      payload = {
+        status: 200,
+        message: "OK",
+        product: product
+      }
+      render json: payload, status: 200
+    end
+  end
+
+  def ship
+    if product = set_product_api(params[:key], params[:sku])
+      if product.on_hand > 0
+        product.on_hand -= 1
+        product.save
+        payload = {
+          status: 200,
+          message: "OK",
+          product: product
+        }
+        render json: payload, status: 200
+      else
+        #out of stock
+        payload = {
+          status: 403,
+          message: "Out of Stock",
+          product: product
+        }
+        render json: payload, status: 403
+      end
+    end
+  end
 
   # GET /products
   # GET /products.json

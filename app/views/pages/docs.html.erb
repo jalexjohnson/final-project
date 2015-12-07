@@ -1,55 +1,116 @@
 <div class="page-header">
-  <h1>API Documentation
-    <small>How to use the Shipper API</small>
-  </h1>
+  <h1>API Documentation</h1>
 </div>
 
 <div class="row">
   <div class="col-sm-8">
-    <h2>Zombies reversus ab inferno, nam malum cerebro.</h2>
+    <h2>How to use the Shipper API</h2>
+    <h3>Shipping a Product</h3>
+    <h4>Sample Request</h4>
+    <% if logged_in? %>
+      <kbd>POST</kbd><code>http://localhost:4000/api/products?key=<%= current_user.key %>&sku=some_sku</code>
+    <% else %>
+      <kbd>POST</kbd><code>http://localhost:4000/api/products?key=your_key&sku=some_sku</code>
+    <% end %>
+    <h4>Sample Successful Response</h4>
+    <pre>
+      {
+        status: 200,
+        message: "OK",
+        product: {
+          sku: "some_sku",
+          on_hand: 20,
+          created_at: "2015-12-07T02:49:15.807Z",
+          updated_at: "2015-12-07T02:49:15.807Z"
+        }
+      }
+    </pre>
+    <h4>Sample Unsuccessful Response</h4>
+    <p>If you try to ship a product that is out of stock, you'll get a <strong>403 - Forbidden</strong> error.</p>
+    <pre>
+      {
+        status: 403,
+        message: "Out of Stock",
+        product: {
+          sku: "some_sku",
+          on_hand: 0,
+          created_at: "2015-12-07T02:49:15.807Z",
+          updated_at: "2015-12-07T02:49:15.807Z"
+        }
+      }
+    </pre>
 
-    <h3>De carne animata corpora quaeritis.</h3>
+    <h4>For the Nerds</h4>
+    <p>
+      Since the request to ship a product is neither "safe" nor "idempotent", is is implemented with the HTTP POST method.
+      It's not "safe" because the request makes a change to how many products you have on hand,
+      and it's not "idempotent" because repeating the request does not have the same effect as sending the request once.
+    </p>
 
-    <ol>
-      <li>Summus sit​​, morbo vel maleficia?</li>
-      <li>De Apocalypsi undead dictum mauris.</li>
-      <li>Hi mortuis soulless creaturas, imo monstra adventus vultus comedat cerebella viventium.</li>
-    </ol>
-
-    <h3>Endpoint #2: Query for quantity remaining.</h3>
-    <ol>
-      <li>What HTTP request would be best?  Think about the URL, HTTP method, and data format.</li>
-      <li>What response will you send back?  What data will you include?  Be sure to document the data structure that clients can expect.</li>
-      <li>What error cases might you need to handle?  Think about possible HTTP status codes and how to document them here.</li>
-    </ol>
-
-    <h3>User Interface Implementation</h3>
-    <ol>
-      <li>Rewrite this page so that it becomes your API documentation for your service.</li>
-      <li>Make the "Set Quantity" button work, so that the user can directly enter a new value.</li>
-      <li>Make the "Delete Product" button work.</li>
-      <li>Modify the New Product form to be boostrap-compliant.</li>
-      <li>Make sure the complete sign in/sign flow works properly.</li>
-    </ol>
-
-    <h3>Consider The Following...</h3>
-    <ol>
-      <li>How will you help prevent unauthorized use of your API?</li>
-      <li>You are free to modify everything about this app: the models, views, controllers, etc.</li>
-      <li>Your app will partly be judged on its ease of use and readability, as you've seen in other real-world web services.</li>
-    </ol>
+    <h3>Query for Quantity Remaining</h3>
+    <h4>Sample Request</h4>
+    <% if logged_in? %>
+      <kbd>GET</kbd><code>http://localhost:4000/api/products?key=<%= current_user.key %>&sku=some_sku</code>
+    <% else %>
+      <kbd>GET</kbd><code>http://localhost:4000/api/products?key=your_key&sku=some_sku</code>
+    <% end %>
+    <h4>Sample Response</h4>
+    <pre>
+      {
+        status: 200,
+        message: "OK",
+        product: {
+          sku: "some_sku",
+          on_hand: 20,
+          created_at: "2015-12-07T02:49:15.807Z",
+          updated_at: "2015-12-07T02:49:15.807Z"
+        }
+      }
+    </pre>
+    <h4>For the Nerds</h4>
+    <p>
+      Since the request for how many products you ahve on hand is both "safe" and "idempotent", it is implemented with the HTTP GET method.
+      It's "safe" because the request does not make any changes to information about the product,
+      and it's "idempotent" because repeating the request has the same effect as sending the request once.
+    </p>
+    <h3>Errors</h3>
+    <ul>
+      <li>
+        <strong>400 - Bad Request</strong>: If you don't include your Key and/or a SKU:
+        <ul><li><%= link_to "http://localhost:4000/api/products?hockey=cool&apollo13=bestmovieever", "/api/products?hockey=cool&apollo13=bestmovieever"%></li></ul>
+      </li>
+      <li>
+        <strong>401 - Unauthorized</strong>: If you include an invalid API Key:
+        <ul><li><%= link_to "http://localhost:4000/api/products?key=manbearpig&sku=globalwarmingbegone", "/api/products?key=manbearpig&sku=globalwarmingbegone"%></li></ul>
+      </li>
+      <li>
+        <strong>404 - Not Found</strong>: If you include an invalid SKU:
+        <ul><li>
+          <% if logged_in? %>
+            <%= link_to "http://localhost:4000/api/products?key=#{current_user.key}&sku=notaproduct", "/api/products?key=#{current_user.key}&sku=notaproduct"%>
+          <% else %>
+            <a href="/auth/twitter">Sign In to see your API Key here.</a>
+          <% end %>
+          </li></ul>
+      </li>
+    </ul>
   </div>
   <div class="col-sm-4 well">
-    <h2>In Your Store App</h2>
+    <h2>Your API Key</h2>
 
-    <ol>
-      <li>Whenever a product is shown, also display the quantity remaining on hand.</li>
-      <li>The app should NOT allow the user to purchase an item if the quantity remaining is zero.</li>
-      <li>Your app must call the Shipper web service after a customer pays for an item and completes their order.</li>
-      <li>Your app should handle and display any error codes received from your Shipper service.</li>
-    <p>
-      <strong>NOTE:</strong>
-      You can start with your HW3 code, or you can start with original starting point for HW3.  If you start from the original HW3 repository, you do not need to implement credit card payments.  You can just stub that out, consider the item as paid, and focus on the shipment challenges in this assignment.
-    </p>
+    <ul>
+      <li>In order to identify your HTTP requests to the Shipper API, you must pass your API Key in all calls.</li>
+      <li>This API Key is a <strong>secret</strong>. All calls to the API must be made using HTTPS to ensure that your API key and data are not intercepted.</li>
+      <li>All calls to the Shipper API must be made server-side.
+        You must not attempt to pass your API key to the client browser (otherwise your customers can ship your products without paying you).
+        Cross origin requests (CORS) are not supported by the Shipper API.</li>
+      <li>Your API Key is:
+        <% if logged_in? %>
+          <code><%= current_user.key %></code>
+        <% else %>
+          <a href="/auth/twitter">Sign In to see your API Key here.</a>
+        <% end %>
+      </li>
+    </ul>
   </div>
 </div>
