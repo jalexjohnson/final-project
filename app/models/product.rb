@@ -5,6 +5,7 @@ class Product < ActiveRecord::Base
 
   belongs_to :user
   validates :sku, presence: true
+  validates :on_hand, numericality: { greater_than_or_equal_to: 0 }
   validates_uniqueness_of :sku, scope: :user_id
 
   def can_change?(user)

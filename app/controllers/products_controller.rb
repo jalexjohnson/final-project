@@ -54,11 +54,11 @@ class ProductsController < ApplicationController
         product.on_hand -= 1
         product.save
         payload = {
-          status: 200,
-          message: "OK",
+          status: 202,
+          message: "Accepted",
           product: product
         }
-        render json: payload, status: 200
+        render json: payload, status: 202
       else
         #out of stock
         payload = {

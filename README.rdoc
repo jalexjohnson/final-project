@@ -2,4 +2,8 @@
 
 Please see my hw3 fork for the music store part of this assignment.
 
-The shipper service should be set up to run on port 4000.
+Run the shipper service using the following commands. You need to seed so there are product SKUs for the music store app.
+bundle install
+rake db:migrate
+rake db:seed
+rails s -p 4000

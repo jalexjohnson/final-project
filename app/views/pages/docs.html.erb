@@ -15,8 +15,8 @@
     <h4>Sample Successful Response</h4>
     <pre>
       {
-        status: 200,
-        message: "OK",
+        status: 202,
+        message: "Accepted",
         product: {
           sku: "some_sku",
           on_hand: 20,
@@ -45,6 +45,10 @@
       Since the request to ship a product is neither "safe" nor "idempotent", is is implemented with the HTTP POST method.
       It's not "safe" because the request makes a change to how many products you have on hand,
       and it's not "idempotent" because repeating the request does not have the same effect as sending the request once.
+    </p>
+    <p>
+      Shipping is an asynchronous process, so we send you a "202 - Accepted" rather than a "200 - OK".
+      We don't currently offer a shipment ID to track the progress of a shipment after it is accepted, however we will contact you if anything goes wrong.
     </p>
 
     <h3>Query for Quantity Remaining</h3>
